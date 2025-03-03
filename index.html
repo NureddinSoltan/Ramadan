@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>يومي في رمضان</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f0f4f8;
+      direction: rtl;
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background-color: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header {
+      background-color: #4682b4;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    th, td {
+      border: 1px solid #ddd;
+      text-align: center;
+      padding: 8px;
+    }
+    
+    th {
+      font-weight: bold;
+    }
+    
+    .day-column {
+      background-color: #4682b4;
+      color: white;
+    }
+    
+    .prayer-header {
+      background-color: #5dc29f;
+      color: white;
+    }
+    
+    .dhikr-header {
+      background-color: #f38d8d;
+      color: white;
+    }
+    
+    .quran-header {
+      background-color: #9d94cb;
+      color: white;
+    }
+    
+    .good-deeds-header {
+      background-color: #f8a87c;
+      color: white;
+    }
+    
+    .sub-header {
+      background-color: #e6f0f5;
+      font-weight: bold;
+    }
+    
+    .checkbox {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid #4682b4;
+      display: inline-block;
+      vertical-align: middle;
+      cursor: pointer;
+    }
+    
+    .checkbox.checked {
+      background-color: #4682b4;
+    }
+    
+    .quran-input {
+      width: 100%;
+      padding: 4px;
+      box-sizing: border-box;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    .row-highlight:nth-child(10n+1) {
+      background-color: #f0f8ff;
+    }
+    
+    .footer {
+      background-color: #f0f4f8;
+      padding: 10px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .controls {
+      padding: 10px;
+      text-align: center;
+      background-color: #e6f0f5;
+    }
+
+    .btn {
+      background-color: #4682b4;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      margin: 0 5px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #3a6d96;
+    }
+
+    .status-message {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #4682b4;
+      height: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      يومي في رمضان (١٤٤٥ هـ - ٢٠٢٤ م)
+    </div>
+    
+    <div class="controls">
+      <button id="saveBtn" class="btn">حفظ البيانات</button>
+      <button id="resetBtn" class="btn">إعادة تعيين</button>
+      <div id="statusMessage" class="status-message"></div>
+    </div>
+    
+    <table id="ramadanTable">
+      <tr>
+        <th rowspan="2" class="day-column">اليوم</th>
+        <th colspan="7" class="prayer-header">الصـــلاة</th>
+        <th colspan="4" class="dhikr-header">الأذكار</th>
+        <th colspan="2" class="quran-header">قرآن</th>
+        <th colspan="5" class="good-deeds-header">أعمال صالحة</th>
+      </tr>
+      <tr>
+        <th colspan="6" class="sub-header">الفروض (على وقتها)</th>
+        <th colspan="1" class="sub-header">النوافل</th>
+        <th colspan="4" class="sub-header"></th>
+        <th colspan="1" class="sub-header">ورد تلاوة</th>
+        <th colspan="1" class="sub-header">ورد تدبر</th>
+        <th colspan="5" class="sub-header"></th>
+      </tr>
+      <tr>
+        <th class="day-column"></th>
+        <th>فجر</th>
+        <th>ظهر</th>
+        <th>عصر</th>
+        <th>مغرب</th>
+        <th>عشاء</th>
+        <th>جماعة</th>
+        <th>قيام الليل</th>
+        <th>صباح</th>
+        <th>مساء</th>
+        <th>استغفار</th>
+        <th>أذكار النوم</th>
+        <th></th>
+        <th></th>
+        <th>صدقة</th>
+        <th>بر الوالدين</th>
+        <th>صلة رحم</th>
+        <th>إدخال سرور</th>
+        <th>دعاء</th>
+      </tr>
+    </table>
+    
+    <div class="footer">
+      Minbary | منبري - لا تنسوا الدعاء للأهل في فلسطين وسوريا والسودان
+    </div>
+  </div>
+
+  <script>
+// Generate 30 days of Ramadan in the table
+const table = document.getElementById('ramadanTable');
+const arabicNumerals = ['١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩', '١٠', 
+                       '١١', '١٢', '١٣', '١٤', '١٥', '١٦', '١٧', '١٨', '١٩', '٢٠',
+                       '٢١', '٢٢', '٢٣', '٢٤', '٢٥', '٢٦', '٢٧', '٢٨', '٢٩', '٣٠'];
+
+for (let i = 0; i < 30; i++) {
+  const row = document.createElement('tr');
+  if ((i + 1) % 10 === 1) row.classList.add('row-highlight');
+  
+  // Day cell
+  const dayCell = document.createElement('td');
+  dayCell.classList.add('day-column');
+  dayCell.textContent = arabicNumerals[i] + ' رمضان';
+  row.appendChild(dayCell);
+  
+  // Add 7 prayer checkboxes
+  for (let j = 0; j < 7; j++) {
+    const cell = document.createElement('td');
+    const checkbox = document.createElement('div');
+    checkbox.className = 'checkbox';
+    checkbox.dataset.day = i + 1;
+    checkbox.dataset.category = j;
+    cell.appendChild(checkbox);
+    row.appendChild(cell);
+  }
+  
+  // Add 4 dhikr checkboxes
+  for (let j = 7; j < 11; j++) {
+    const cell = document.createElement('td');
+    const checkbox = document.createElement('div');
+    checkbox.className = 'checkbox';
+    checkbox.dataset.day = i + 1;
+    checkbox.dataset.category = j;
+    cell.appendChild(checkbox);
+    row.appendChild(cell);
+  }
+  
+  // Add Quran input cells (2 inputs)
+  for (let j = 0; j < 2; j++) {
+    const cell = document.createElement('td');
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'quran-input';
+    input.dataset.day = i + 1;
+    input.dataset.category = j;
+    cell.appendChild(input);
+    row.appendChild(cell);
+  }
+  
+  // Add 5 good deeds checkboxes
+  for (let j = 11; j < 16; j++) {
+    const cell = document.createElement('td');
+    const checkbox = document.createElement('div');
+    checkbox.className = 'checkbox';
+    checkbox.dataset.day = i + 1;
+    checkbox.dataset.category = j + 2; // Offset by 2 to account for the 2 quran inputs
+    cell.appendChild(checkbox);
+    row.appendChild(cell);
+  }
+  
+  table.appendChild(row);
+}
+
+// Local storage functions
+const STORAGE_KEY = 'ramadan_tracker_data';
+
+// Initialize tracker data
+let trackerData = {
+  checkboxes: {},
+  inputs: {}
+};
+
+// Save data to local storage
+function saveToLocalStorage() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(trackerData));
+  showStatusMessage('تم حفظ البيانات بنجاح!');
+}
+
+// Load data from local storage
+function loadFromLocalStorage() {
+  const savedData = localStorage.getItem(STORAGE_KEY);
+  if (savedData) {
+    trackerData = JSON.parse(savedData);
+    applyDataToUI();
+    showStatusMessage('تم استرجاع البيانات المحفوظة');
+  }
+}
+
+// Reset all data
+function resetAllData() {
+  if (confirm('هل أنت متأكد من رغبتك في إعادة تعيين جميع البيانات؟')) {
+    trackerData = {
+      checkboxes: {},
+      inputs: {}
+    };
+    localStorage.removeItem(STORAGE_KEY);
+    clearAllUI();
+    showStatusMessage('تم إعادة تعيين جميع البيانات');
+  }
+}
+
+// Apply loaded data to UI
+function applyDataToUI() {
+  // Apply checkbox states
+  for (const key in trackerData.checkboxes) {
+    if (trackerData.checkboxes[key]) {
+      const [day, category] = key.split('-');
+      const checkbox = document.querySelector(`.checkbox[data-day="${day}"][data-category="${category}"]`);
+      if (checkbox) {
+        checkbox.classList.add('checked');
+      }
+    }
+  }
+  
+  // Apply input values
+  for (const key in trackerData.inputs) {
+    const [day, category] = key.split('-');
+    const input = document.querySelector(`.quran-input[data-day="${day}"][data-category="${category}"]`);
+    if (input) {
+      input.value = trackerData.inputs[key];
+    }
+  }
+}
+
+// Clear all UI elements
+function clearAllUI() {
+  document.querySelectorAll('.checkbox').forEach(el => {
+    el.classList.remove('checked');
+  });
+  
+  document.querySelectorAll('.quran-input').forEach(el => {
+    el.value = '';
+  });
+}
+
+// Show status message
+function showStatusMessage(message) {
+  const statusEl = document.getElementById('statusMessage');
+  statusEl.textContent = message;
+  
+  // Clear message after 3 seconds
+  setTimeout(() => {
+    statusEl.textContent = '';
+  }, 3000);
+}
+
+// Auto-save when checkboxes are clicked
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('checkbox')) {
+    const { day, category } = e.target.dataset;
+    const key = `${day}-${category}`;
+    
+    if (e.target.classList.contains('checked')) {
+      e.target.classList.remove('checked');
+      delete trackerData.checkboxes[key];
+    } else {
+      e.target.classList.add('checked');
+      trackerData.checkboxes[key] = true;
+    }
+    
+    // Auto-save on checkbox changes
+    saveToLocalStorage();
+  }
+});
+
+// Handle input changes
+document.addEventListener('change', function(e) {
+  if (e.target.classList.contains('quran-input')) {
+    const { day, category } = e.target.dataset;
+    const key = `${day}-${category}`;
+    
+    if (e.target.value.trim()) {
+      trackerData.inputs[key] = e.target.value;
+    } else {
+      delete trackerData.inputs[key];
+    }
+    
+    // Auto-save on input changes
+    saveToLocalStorage();
+  }
+});
+
+// Set up button events
+document.getElementById('saveBtn').addEventListener('click', saveToLocalStorage);
+document.getElementById('resetBtn').addEventListener('click', resetAllData);
+
+// Load saved data when page loads
+window.addEventListener('load', loadFromLocalStorage);
+// Also save when window is closed
+window.addEventListener('beforeunload', saveToLocalStorage);
+  </script>
+</body>
+</html>
